@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link href="assets/css/main.css" type="text/css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Abel|News+Cycle|Roboto+Condensed|Source+Sans+Pro" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous">
+    </script>
+
+    
+  </head>
+  <body>
+    <div class="side-nav">
+      <p><span id="logo">F-EASY</span></p>
+      <p><span id="bal"></span></p>
+      <div class="nav-item">
+        <i class="far fa-share-square fa-lg"></i>
+        <p class="nav-label">SEND</p>
+      </div>
+    </div>
+    <div class="main-container">
+      <div id="header">
+        <h1>Send FIMFL</h1>
+        <p>Send FIMFLs to another address</p>
+      </div>
+    
+      
+  </body>
+
+
+
+
+  <script type="text/javascript">
+      var rawFile = new XMLHttpRequest();
+      rawFile.open("GET", "file:///Applications/fimfl-webwallet/main.address", false);
+      rawFile.onreadystatechange = function(){
+      if(rawFile.readyState === 4){
+          if(rawFile.status === 200 || rawFile.status == 0){
+            var address = rawFile.responseText;
+            document.getElementById("address").innerHTML = address;
+          }
+      }
+    }
+
+      rawFile.send(null);
+
+
+  </script>
+  <script>
+      // You can also require other files to run in this process
+      require('./renderer.js')
+    </script>
+</html>

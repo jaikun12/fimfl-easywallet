@@ -1,5 +1,10 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
+const {app, BrowserWindow, ipcMain} = require('electron')
+const path = require ('path');
+const fs = require('fs');
+const os = require('os');
+
+var request = require("request")
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -7,13 +12,14 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600})
+  mainWindow = new BrowserWindow({width: 1280, height: 720})
 
   // and load the index.html of the app.
   mainWindow.loadFile('index.html')
-
+ 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
+  
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -23,6 +29,73 @@ function createWindow () {
     mainWindow = null
   })
 }
+
+
+function requestTransfer(paymentId, sendAmount, sendAddress) {
+  var sendAmountBig = sendAmount * 100000000
+  var fee = 0.01 * 100000000
+
+  console.log(sendAmount)
+  console.log(sendAddress)
+
+
+  // JSON Passed to JSON RPC
+  var requestTransfer = {
+    "jsonrpc" : "2.0",
+    "id": "testTransfer", 
+    "method": "transfer", 
+    "destinations": {
+      "type" : "array",
+      "items" : {
+        "amount" : sendAmountBig,
+        "address" : sendAddress
+      },
+      "minItems" : 1
+    },
+    "payment_id" : paymentId,
+    "fee" : fee,
+    "mixin" : 0,
+  }
+
+  // URL for json RPC
+  url = "http://localhost:8069/json_rpc"
+
+  request({
+  url: url,
+  method: "POST",
+  headers: {
+    "content-type": "application/json",
+  },
+  json: requestTransfer
+  },
+  function (error, response, body) {
+    if(!error && response.statusCode === 200) {
+      var transactionHash = body.result.tx_hash
+      responseMessage = "Successfully Sent!"
+      return transactionHash
+
+    }
+    else{
+      console.log("error:" + error)
+      console.log("response.statusCode: " + response.statusCode)
+      console.log("response.statusText: " + response.statusText)
+      responseMessage = response.statusText
+    }
+  })
+}
+
+// exports.handleForm = function handleForm(targetWindow, paymentId, amount, address) {
+//     var hash = requestTransfer(paymentId, amount, address);
+//     targetWindow.webContents.send('form-received', "we got it", hash);
+// };
+
+ipcMain.on('form-submission', function (event, transDetails) {
+    console.log("IPC main got the form")
+    var responseMessage;
+    var hash = requestTransfer(transDetails.paymentId, transDetails.amount, transDetails.address);
+    event.sender.send('form-received', responseMessage, hash)
+});
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

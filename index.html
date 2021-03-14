@@ -2,18 +2,76 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <link href="assets/css/main.css" type="text/css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Abel|News+Cycle|Roboto+Condensed|Source+Sans+Pro" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous">
+    </script>
+
+    
   </head>
   <body>
-    <h1>Hello World!</h1>
-    <!-- All of the Node.js APIs are available in this renderer process. -->
-    We are using Node.js <script>document.write(process.versions.node)</script>,
-    Chromium <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+    <!-- <div class="side-nav">
+      <p><span id="logo">F-EASY</span></p>
+      <p><span id="bal"></span></p>
+      <a href="send.html"><div class="nav-item">
+        <i class="far fa-share-square fa-lg"></i>
+        <p class="nav-label">SEND</p>
+      </div></a>
+    </div> -->
+    <div class="main-container">
+      <div id="header">
+        <h1>Welcome to F-EASY</h1>
+        <p>The official web wallet app for FIMFL</p>
+      </div>
+    
+      <p id="address-field">Your Address: <span id="address"></span></p>
+      <div class="balances">
+        <div class="balance-box">
+          <p>Available Balance</p><span id="availBal"></span>
+          
+        </div>
+        <div class="balance-box">
+          <p>Locked Balance</p> <span id="lockedBal"></span>
+        </div>
+      </div>
 
-    <script>
+      <form id="send-container" onSubmit="JavaScript:sendForm(event)">
+        <h2>Send FIMFLS</h2>
+        <p>Send fimfls to another address</p>
+        <input type="text" id="paymentId" placeholder="payment ID"/>
+        <input type="number" id="sendAmount" placeholder="0.00"/>
+        <input type="text" id="sendAddress" placeholder="address"/>
+        <button id="sendBtn" type="submit">Send</button>
+      </form>
+      <p id="response"></p>
+  </body>
+
+
+
+
+  <script type="text/javascript">
+      var rawFile = new XMLHttpRequest();
+      rawFile.open("GET", "file:///Applications/fimfl-webwallet/main.address", false);
+      rawFile.onreadystatechange = function(){
+      if(rawFile.readyState === 4){
+          if(rawFile.status === 200 || rawFile.status == 0){
+            var address = rawFile.responseText;
+            document.getElementById("address").innerHTML = address;
+          }
+      }
+    }
+
+      rawFile.send(null);
+
+
+  </script>
+  <script src='renderer.js'></script>
+  <script>
       // You can also require other files to run in this process
       require('./renderer.js')
     </script>
-  </body>
 </html>
